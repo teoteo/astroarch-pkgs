@@ -14,6 +14,9 @@ name: Weekly -git builds
 on:
   schedule:
     - cron: '0 2 * * 1'   # every Monday at 02:00 UTC
+  # TEST ONLY (fork): run on push to this branch; inputs are empty, so arch=both, publish=no
+  push:
+    branches: [test/weekly-git-hosted-arm]
   workflow_dispatch:
     inputs:
       arch:
@@ -48,7 +51,7 @@ jobs:
         id: set-matrix
         run: |
           x86='{"arch":"x86_64","runner":"\"ubuntu-latest\"","image":"archlinux:latest","pkg_glob":"*.pkg.tar.zst"}'
-          arm='{"arch":"aarch64","runner":"[\"self-hosted\"]","image":"ghcr.io/devducks/archlinuxarm:latest","pkg_glob":"*.pkg.tar.xz"}'
+          arm='{"arch":"aarch64","runner":"\"ubuntu-24.04-arm\"","image":"ghcr.io/devducks/archlinuxarm:latest","pkg_glob":"*.pkg.tar.xz"}'
           case "${{ inputs.arch }}" in
             x86_64)  echo "arch_matrix={\"include\":[$x86]}" >> "$GITHUB_OUTPUT"; echo 'arches=["x86_64"]' >> "$GITHUB_OUTPUT" ;;
             aarch64) echo "arch_matrix={\"include\":[$arm]}" >> "$GITHUB_OUTPUT"; echo 'arches=["aarch64"]' >> "$GITHUB_OUTPUT" ;;
